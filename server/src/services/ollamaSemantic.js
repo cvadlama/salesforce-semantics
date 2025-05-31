@@ -2,6 +2,7 @@ const natural = require('natural');
 const stringSimilarity = require('string-similarity');
 const winkNLP = require('wink-nlp');
 const model = require('wink-eng-lite-web-model');
+const its = require('wink-nlp/src/its.js');
 const nlp = winkNLP(model);
 
 // Helper function to preprocess labels
