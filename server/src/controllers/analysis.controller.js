@@ -36,24 +36,28 @@ class AnalysisController {
       const sobjectName = req.params.sobject;
       console.log('Analyzing sharing model for object:', sobjectName);
       
-      // Get basic object info
+      // First get basic object info
       const meta = await salesforceService.describeSObject(sobjectName);
       
-      // Get sharing model using metadata API
-      const sharingInfo = await salesforceService.getSharingModel(sobjectName);
-      console.log('Sharing settings received from Salesforce:', {
+      // Then get metadata including sharing model
+      const objectMetadata = await salesforceService.getObjectMetadata(sobjectName);
+      
+      console.log('Object metadata received:', {
         objectName: meta.name,
         label: meta.label,
-        sharingModel: sharingInfo.sharingModel,
-        defaultRecordAccess: sharingInfo.defaultRecordAccess
+        sharingModel: objectMetadata.sharingModel,
+        defaultRecordAccess: objectMetadata.defaultRecordAccess
       });
       
-      // Get explanation, including special handling for objects that don't support sharing
-      const explanation = sharingInfo.sharingModel === 'Unknown' 
-        ? 'This object may not support sharing settings or you may not have permission to view them.'
-        : salesforceService.explainSharingModel(sharingInfo.sharingModel);
+      // Get explanation
+      const explanation = objectMetadata.sharingModel === 'Unknown'
+        ? 'Unable to retrieve sharing settings. This may be because: \n' +
+          '1. This is a standard object that does not expose sharing via the Metadata API\n' +
+          '2. You may not have permission to view sharing settings\n' +
+          '3. The object may not support sharing settings'
+        : salesforceService.explainSharingModel(objectMetadata.sharingModel);
         
-      const html = generateSharingModelHtml(sobjectName, sharingInfo.sharingModel, explanation);
+      const html = generateSharingModelHtml(sobjectName, objectMetadata.sharingModel, explanation);
       res.send(html);
     } catch (err) {
       res.status(500).send(`<html><body><h1>Error</h1><pre>${err.message}</pre></body></html>`);
