@@ -7,7 +7,12 @@ class SalesforceService {
 
   async describeSObject(sobjectName) {
     await this.login();
-    return conn.sobject(sobjectName).describe();
+    const result = await conn.sobject(sobjectName).describe();
+    // Ensure we get the sharing model from the correct location
+    result.sharingModel = result.sharingModel || 
+                         (result.defaultRecordTypeInfo && result.defaultRecordTypeInfo.sharingModel) || 
+                         'Unknown';
+    return result;
   }
 
   explainSharingModel(model) {

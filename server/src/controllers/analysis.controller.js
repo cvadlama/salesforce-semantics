@@ -35,8 +35,15 @@ class AnalysisController {
     try {
       const sobjectName = req.params.sobject;
       const meta = await salesforceService.describeSObject(sobjectName);
-      const sharingModel = meta.sharingModel || 'Unknown';
-      const explanation = salesforceService.explainSharingModel(sharingModel);
+      
+      // The sharingModel should already be properly set in the service
+      const sharingModel = meta.sharingModel;
+      
+      // Get explanation, including special handling for objects that don't support sharing
+      const explanation = meta.sharingModel === 'Unknown' 
+        ? 'This object may not support sharing settings or you may not have permission to view them.'
+        : salesforceService.explainSharingModel(sharingModel);
+        
       const html = generateSharingModelHtml(sobjectName, sharingModel, explanation);
       res.send(html);
     } catch (err) {
