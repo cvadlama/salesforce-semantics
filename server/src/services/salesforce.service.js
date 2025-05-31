@@ -8,10 +8,19 @@ class SalesforceService {
   async describeSObject(sobjectName) {
     await this.login();
     const result = await conn.sobject(sobjectName).describe();
+    
+    console.log('Raw Salesforce Response:', {
+      directSharingModel: result.sharingModel,
+      defaultRecordTypeInfo: result.defaultRecordTypeInfo,
+      recordTypeInfos: result.recordTypeInfos
+    });
+
     // Ensure we get the sharing model from the correct location
     result.sharingModel = result.sharingModel || 
                          (result.defaultRecordTypeInfo && result.defaultRecordTypeInfo.sharingModel) || 
                          'Unknown';
+    
+    console.log('Final sharingModel value:', result.sharingModel);
     return result;
   }
 

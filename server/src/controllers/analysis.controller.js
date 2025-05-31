@@ -34,7 +34,16 @@ class AnalysisController {
   async analyzeSharingModel(req, res) {
     try {
       const sobjectName = req.params.sobject;
+      console.log('Analyzing sharing model for object:', sobjectName);
+      
       const meta = await salesforceService.describeSObject(sobjectName);
+      console.log('Metadata received from Salesforce:', {
+        objectName: meta.name,
+        label: meta.label,
+        sharingModel: meta.sharingModel,
+        createable: meta.createable,
+        queryable: meta.queryable
+      });
       
       // The sharingModel should already be properly set in the service
       const sharingModel = meta.sharingModel;
