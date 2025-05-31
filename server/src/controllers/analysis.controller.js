@@ -36,24 +36,24 @@ class AnalysisController {
       const sobjectName = req.params.sobject;
       console.log('Analyzing sharing model for object:', sobjectName);
       
+      // Get basic object info
       const meta = await salesforceService.describeSObject(sobjectName);
-      console.log('Metadata received from Salesforce:', {
+      
+      // Get sharing model using metadata API
+      const sharingInfo = await salesforceService.getSharingModel(sobjectName);
+      console.log('Sharing settings received from Salesforce:', {
         objectName: meta.name,
         label: meta.label,
-        sharingModel: meta.sharingModel,
-        createable: meta.createable,
-        queryable: meta.queryable
+        sharingModel: sharingInfo.sharingModel,
+        defaultRecordAccess: sharingInfo.defaultRecordAccess
       });
       
-      // The sharingModel should already be properly set in the service
-      const sharingModel = meta.sharingModel;
-      
       // Get explanation, including special handling for objects that don't support sharing
-      const explanation = meta.sharingModel === 'Unknown' 
+      const explanation = sharingInfo.sharingModel === 'Unknown' 
         ? 'This object may not support sharing settings or you may not have permission to view them.'
-        : salesforceService.explainSharingModel(sharingModel);
+        : salesforceService.explainSharingModel(sharingInfo.sharingModel);
         
-      const html = generateSharingModelHtml(sobjectName, sharingModel, explanation);
+      const html = generateSharingModelHtml(sobjectName, sharingInfo.sharingModel, explanation);
       res.send(html);
     } catch (err) {
       res.status(500).send(`<html><body><h1>Error</h1><pre>${err.message}</pre></body></html>`);

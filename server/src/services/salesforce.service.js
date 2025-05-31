@@ -7,21 +7,43 @@ class SalesforceService {
 
   async describeSObject(sobjectName) {
     await this.login();
-    const result = await conn.sobject(sobjectName).describe();
-    
-    console.log('Raw Salesforce Response:', {
-      directSharingModel: result.sharingModel,
-      defaultRecordTypeInfo: result.defaultRecordTypeInfo,
-      recordTypeInfos: result.recordTypeInfos
-    });
+    return conn.sobject(sobjectName).describe();
+  }
 
-    // Ensure we get the sharing model from the correct location
-    result.sharingModel = result.sharingModel || 
-                         (result.defaultRecordTypeInfo && result.defaultRecordTypeInfo.sharingModel) || 
-                         'Unknown';
+  async getSharingModel(sobjectName) {
+    await this.login();
     
-    console.log('Final sharingModel value:', result.sharingModel);
-    return result;
+    try {
+      // Use metadata API to get organization-wide defaults
+      const result = await conn.metadata.read('CustomObject', sobjectName);
+      console.log('Metadata API Response:', {
+        objectName: sobjectName,
+        sharingModel: result.sharingModel,
+        fullResult: result
+      });
+      
+      return {
+        sharingModel: result.sharingModel || 'Unknown',
+        defaultRecordAccess: result.sharingModel === 'Private' ? 'None' : result.sharingModel
+      };
+    } catch (error) {
+      console.error('Error fetching sharing settings:', error);
+      // If it's not a custom object, try standard object metadata
+      try {
+        const standardResult = await conn.metadata.read('CustomObject', sobjectName);
+        return {
+          sharingModel: standardResult.sharingModel || 'Unknown',
+          defaultRecordAccess: standardResult.sharingModel === 'Private' ? 'None' : standardResult.sharingModel
+        };
+      } catch (standardError) {
+        console.error('Error fetching standard object sharing settings:', standardError);
+        return {
+          sharingModel: 'Unknown',
+          defaultRecordAccess: 'Unknown'
+        };
+      }
+    }
+  }
   }
 
   explainSharingModel(model) {
