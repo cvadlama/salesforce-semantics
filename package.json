@@ -1,0 +1,20 @@
+{
+  "scripts": {
+    "start": "cross-env NODE_PATH=. node server/index.js",
+    "dev": "cross-env NODE_PATH=. nodemon server/index.js --watch server"
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsforce": "^3.8.2",
+    "natural": "^8.1.0",
+    "string-similarity": "^4.0.4",
+    "wink-eng-lite-web-model": "^1.8.1",
+    "wink-nlp": "^2.3.2"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "nodemon": "^3.1.10"
+  }
+}
