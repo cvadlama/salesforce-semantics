@@ -1,4 +1,7 @@
 {
+  "name": "salesforce-semantics",
+  "version": "1.0.0",
+  "description": "A Node.js application that analyzes Salesforce object fields and picklists for semantic similarities using NLP approaches",
   "scripts": {
     "start": "cross-env NODE_PATH=. node server/index.js",
     "dev": "cross-env NODE_PATH=. nodemon server/index.js --watch server"

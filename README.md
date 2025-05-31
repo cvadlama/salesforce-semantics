@@ -1,4 +1,4 @@
-# Salesforce Field Similarity Analyzer
+# Salesforce Semantics
 
 A Node.js application that analyzes Salesforce object fields and picklists for semantic similarities using different NLP approaches.
 

@@ -10,38 +10,39 @@ class SalesforceService {
     return conn.sobject(sobjectName).describe();
   }
 
-  async getObjectMetadata(sobjectName) {
+  async getSharingModel(sobjectName) {
     await this.login();
     
     try {
-      console.log('Reading metadata for:', sobjectName);
-      const result = await conn.metadata.read('CustomObject', [sobjectName]);
+      // Use metadata API to get organization-wide defaults
+      const result = await conn.metadata.read('CustomObject', sobjectName);
       console.log('Metadata API Response:', {
         objectName: sobjectName,
-        sharingModel: result ? result.sharingModel : 'Unknown',
-        result: result
+        sharingModel: result.sharingModel,
+        fullResult: result
       });
       
-      if (!result) {
-        return {
-          sharingModel: 'Unknown',
-          defaultRecordAccess: 'Unknown'
-        };
-      }
-
       return {
         sharingModel: result.sharingModel || 'Unknown',
         defaultRecordAccess: result.sharingModel === 'Private' ? 'None' : result.sharingModel
       };
     } catch (error) {
-      console.error('Error fetching object metadata:', error);
-      return {
-        sharingModel: 'Unknown',
-        defaultRecordAccess: 'Unknown',
-        error: error.message
-      };
-    }
-  }
+      console.error('Error fetching sharing settings:', error);
+      // If it's not a custom object, try standard object metadata
+      try {
+        const standardResult = await conn.metadata.read('CustomObject', sobjectName);
+        return {
+          sharingModel: standardResult.sharingModel || 'Unknown',
+          defaultRecordAccess: standardResult.sharingModel === 'Private' ? 'None' : standardResult.sharingModel
+        };
+      } catch (standardError) {
+        console.error('Error fetching standard object sharing settings:', standardError);
+        return {
+          sharingModel: 'Unknown',
+          defaultRecordAccess: 'Unknown'
+        };
+      }
+    }    }
   
   explainSharingModel(model) {
     switch (model) {
