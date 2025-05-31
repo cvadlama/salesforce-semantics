@@ -1,4 +1,4 @@
-const { analyzeLabelSimilarities, analyzeLabelSimilaritiesWink } = require('./ollamaSemantic');
+const { analyzeLabelSimilarities, analyzeLabelSimilaritiesWink } = require('./OrgSemantic');
 
 class SimilarityService {
   async analyzeSimilarities(meta, threshold = 0.8) {
