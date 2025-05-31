@@ -42,10 +42,8 @@ class SalesforceService {
           defaultRecordAccess: 'Unknown'
         };
       }
-    }
-  }
-  }
-
+    }    }
+  
   explainSharingModel(model) {
     switch (model) {
       case 'Private':
