@@ -23,9 +23,25 @@ A Node.js application that analyzes Salesforce object fields and picklists for s
 
 ## API Endpoints
 
-- GET /analyze-nlp/:sobject?threshold=0.8 - Analyze field similarities using combined NLP (threshold: 0-1, default: 0.8)
-- GET /analyze-nlp-wink/:sobject?threshold=0.7 - Analyze field similarities using Wink NLP (threshold: 0-1, default: 0.7)
-- GET /sharing/:sobject - Get sharing model information
+### Field Similarity Analysis
+- GET /analyze-nlp/:sobject?threshold=0.8
+  - Analyze field similarities using combined NLP approach (Jaro-Winkler + string similarity)
+  - Parameters:
+    - sobject: The Salesforce object API name (e.g., Account, Contact)
+    - threshold: Similarity threshold (0-1, default: 0.8)
+
+- GET /analyze-nlp-wink/:sobject?threshold=0.7
+  - Analyze field similarities using Wink NLP's token-based analysis
+  - Parameters:
+    - sobject: The Salesforce object API name (e.g., Account, Contact)
+    - threshold: Similarity threshold (0-1, default: 0.7)
+
+### Sharing Model Analysis
+- GET /sharing/:sobject
+  - Get detailed sharing model information for a Salesforce object
+  - Parameters:
+    - sobject: The Salesforce object API name (e.g., Account, Contact)
+  - Returns: The object's sharing model settings with explanation
 
 The threshold parameter controls how similar fields need to be to be included in the results. A higher threshold means fields need to be more similar to be included (0.8 is stricter than 0.7).
 
