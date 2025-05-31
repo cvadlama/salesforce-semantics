@@ -16,11 +16,6 @@ class SalesforceService {
     try {
       // Use metadata API to get organization-wide defaults
       const result = await conn.metadata.read('CustomObject', sobjectName);
-      console.log('Metadata API Response:', {
-        objectName: sobjectName,
-        sharingModel: result.sharingModel,
-        fullResult: result
-      });
       
       return {
         sharingModel: result.sharingModel || 'Unknown',
@@ -42,7 +37,8 @@ class SalesforceService {
           defaultRecordAccess: 'Unknown'
         };
       }
-    }    }
+    }    
+  }
   
   explainSharingModel(model) {
     switch (model) {

@@ -41,12 +41,6 @@ class AnalysisController {
       
       // Get sharing model using metadata API
       const sharingInfo = await salesforceService.getSharingModel(sobjectName);
-      console.log('Sharing settings received from Salesforce:', {
-        objectName: meta.name,
-        label: meta.label,
-        sharingModel: sharingInfo.sharingModel,
-        defaultRecordAccess: sharingInfo.defaultRecordAccess
-      });
       
       // Get explanation, including special handling for objects that don't support sharing
       const explanation = sharingInfo.sharingModel === 'Unknown' 
