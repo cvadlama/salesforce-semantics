@@ -32,7 +32,7 @@ function analyzeLabelSimilarities(labels, threshold = 0.7) {
       // Calculate combined similarity score
       const similarity = (jaroSim + stringSim) / 2;
       
-      if (similarity > threshold) {
+      if (similarity >= threshold) {
         similarPairs.push({
           pair: [labels[i], labels[j]],
           similarity
@@ -70,7 +70,7 @@ function analyzeLabelSimilaritiesWink(labels, threshold = 0.7) {
       // Jaccard similarity for token overlap
       const similarity = intersection.size / union.size;
       
-      if (similarity > threshold) {
+      if (similarity >= threshold) {
         similarPairs.push({
           pair: [labels[i], labels[j]],
           similarity,
