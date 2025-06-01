@@ -17,6 +17,7 @@ A Node.js application that analyzes Salesforce object fields and picklists for s
    ```
    SF_USERNAME=your_username
    SF_PASSWORD=your_password
+   SF_LOGIN_URL=your_mydomain_url
    PORT=3001
    ```
 4. Run \`npm run dev\` for development or \`npm start\` for production
