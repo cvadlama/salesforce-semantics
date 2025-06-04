@@ -1,7 +1,14 @@
-const { conn, SF_USERNAME, SF_PASSWORD } = require('../config/database');
+const { conn, SF_USERNAME, SF_PASSWORD, AUTH_MODE, SF_OAUTH_INSTANCE_URL } = require('../config/database');
 
 class SalesforceService {
   async login() {
+    // If using OAuth with valid access token, no need to explicitly login
+    if (AUTH_MODE === 'oauth') {
+      // OAuth connection should already be authenticated
+      return Promise.resolve();
+    }
+    
+    // Username-password login
     return conn.login(SF_USERNAME, SF_PASSWORD);
   }
 

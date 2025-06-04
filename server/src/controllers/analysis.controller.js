@@ -1,6 +1,6 @@
 const salesforceService = require('../services/salesforce.service');
 const similarityService = require('../services/similarity.service');
-const { generateSimilarityAnalysisHtml, generateSharingModelHtml } = require('../utils/template.utils');
+const { generateSimilarityAnalysisHtml, generateSharingModelHtml, generateHtmlResponse } = require('../utils/template.utils');
 
 class AnalysisController {
   async analyzeSimilarity(req, res) {
@@ -13,7 +13,8 @@ class AnalysisController {
       const html = generateSimilarityAnalysisHtml(sobjectName, results, 'NLP');
       res.send(html);
     } catch (err) {
-      res.status(500).send(`<html><body><h1>Error</h1><pre>${err.message}</pre></body></html>`);
+      const errorContent = `<h1>Error</h1><pre>${err.message}</pre>`;
+      res.status(500).send(generateHtmlResponse('Error', errorContent));
     }
   }
 
@@ -27,7 +28,8 @@ class AnalysisController {
       const html = generateSimilarityAnalysisHtml(sobjectName, results, 'Wink NLP');
       res.send(html);
     } catch (err) {
-      res.status(500).send(`<html><body><h1>Error</h1><pre>${err.message}</pre></body></html>`);
+      const errorContent = `<h1>Error</h1><pre>${err.message}</pre>`;
+      res.status(500).send(generateHtmlResponse('Error', errorContent));
     }
   }
 
@@ -50,7 +52,8 @@ class AnalysisController {
       const html = generateSharingModelHtml(sobjectName, sharingInfo.sharingModel, explanation);
       res.send(html);
     } catch (err) {
-      res.status(500).send(`<html><body><h1>Error</h1><pre>${err.message}</pre></body></html>`);
+      const errorContent = `<h1>Error</h1><pre>${err.message}</pre>`;
+      res.status(500).send(generateHtmlResponse('Error', errorContent));
     }
   }
 }

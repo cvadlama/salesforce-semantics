@@ -34,12 +34,14 @@ class SimilarityService {
     const picklistValues = picklists.map(f => {
       const picklistValuesWithApi = f.picklistValues.map(v => ({
         label: v.label,
-        value: v.value
+        value: v.value,
+        active: v.active !== undefined ? v.active : true // Default to true if not specified
       }));
       return {
         field: f.name,
         label: f.label,
-        values: picklistValuesWithApi
+        values: picklistValuesWithApi,
+        active: f.active !== undefined ? f.active : true // Add field active status
       };
     });
 
@@ -56,6 +58,10 @@ class SimilarityService {
         apiValues: [
           picklist.values.find(v => v.label === sim.pair[0])?.value || '',
           picklist.values.find(v => v.label === sim.pair[1])?.value || ''
+        ],
+        active: [
+          picklist.values.find(v => v.label === sim.pair[0])?.active !== false, // Default to true if undefined
+          picklist.values.find(v => v.label === sim.pair[1])?.active !== false  // Default to true if undefined
         ]
       }));
 
@@ -63,6 +69,7 @@ class SimilarityService {
         similarPicklistsNLP.push({
           field: picklist.field,
           label: picklist.label,
+          active: picklist.active, // Include picklist active status
           similarValues: enhancedSimilar
         });
       }
@@ -109,12 +116,14 @@ class SimilarityService {
     const picklistValues = picklists.map(f => {
       const picklistValuesWithApi = f.picklistValues.map(v => ({
         label: v.label,
-        value: v.value
+        value: v.value,
+        active: v.active !== undefined ? v.active : true // Default to true if not specified
       }));
       return {
         field: f.name,
         label: f.label,
-        values: picklistValuesWithApi
+        values: picklistValuesWithApi,
+        active: f.active !== undefined ? f.active : true // Add field active status
       };
     });
 
@@ -133,7 +142,11 @@ class SimilarityService {
             return {
               pair: sim.pair,
               cosine: sim.similarity, // Map similarity to cosine for template compatibility
-              apiValues: [apiValue1, apiValue2]
+              apiValues: [apiValue1, apiValue2],
+              active: [
+                picklist.values.find(v => v.label === sim.pair[0])?.active !== false, // Default to true if undefined
+                picklist.values.find(v => v.label === sim.pair[1])?.active !== false  // Default to true if undefined
+              ]
             };
           }
           return null;
@@ -144,6 +157,7 @@ class SimilarityService {
         similarPicklistsWink.push({
           field: picklist.field,
           label: picklist.label,
+          active: picklist.active, // Include picklist active status
           similarValues: enhancedSimilar
         });
       }
