@@ -56,15 +56,30 @@ For better security, you can use OAuth 2.0 authentication:
 
 ## API Endpoints
 
-### Field Similarity Analysis
+### Multi-Object Similarity Analysis (New!)
+- GET /analyze-multi?objects=Account,Contact,Lead&threshold=0.8&method=nlp
+  - Scan multiple Salesforce objects and present a comprehensive report organized by object
+  - Shows all attributes and picklist values that cross the similarity threshold
+  - Parameters:
+    - objects: Comma-separated list of Salesforce object API names (required, e.g., Account,Contact,Lead)
+    - threshold: Similarity threshold (0-1, optional, defaults based on method)
+    - method: Analysis method - 'nlp' or 'wink' (optional, default: 'nlp')
+  - Features:
+    - Summary table showing total similarities found per object
+    - Detailed analysis for each object with field and picklist similarities
+    - Color-coded status indicators (green = clean, red = similarities found)
+    - Yellow highlighting for similarities ≥95% (likely near-duplicates requiring immediate attention)
+    - Easy navigation with table of contents and anchor links
+
+### Single Object Similarity Analysis
 - GET /analyze-nlp/:sobject?threshold=0.8
-  - Analyze field similarities using combined NLP approach (Jaro-Winkler + string similarity)
+  - Analyze field similarities for a single object using combined NLP approach (Jaro-Winkler + string similarity)
   - Parameters:
     - sobject: The Salesforce object API name (e.g., Account, Contact)
     - threshold: Similarity threshold (0-1, default: 0.8)
 
 - GET /analyze-nlp-wink/:sobject?threshold=0.7
-  - Analyze field similarities using Wink NLP's token-based analysis
+  - Analyze field similarities for a single object using Wink NLP's token-based analysis
   - Parameters:
     - sobject: The Salesforce object API name (e.g., Account, Contact)
     - threshold: Similarity threshold (0-1, default: 0.7)
@@ -84,7 +99,18 @@ For better security, you can use OAuth 2.0 authentication:
 - POST /oauth/set-mode
   - Switch between authentication modes (password or oauth)
 
-The threshold parameter controls how similar fields need to be to be included in the results. A higher threshold means fields need to be more similar to be included (0.8 is stricter than 0.7).
+### Understanding Thresholds
+The threshold parameter controls how similar fields need to be to be included in the results:
+- A higher threshold (e.g., 0.8) means fields need to be more similar to be flagged (stricter, fewer results)
+- A lower threshold (e.g., 0.6) will catch more potential duplicates but may have false positives (more lenient, more results)
+- Recommended: 0.8 for NLP method, 0.7 for Wink NLP method
+
+### Visual Indicators
+Reports include visual highlighting to help you quickly identify critical issues:
+- **Yellow background (≥95% similarity)**: Near-duplicates that likely require immediate attention - these are extremely similar fields or picklist values that may be unintentional duplicates
+- **Warning icon (⚠️)**: Appears alongside high similarity scores (≥95%) to draw attention to outliers
+- **Green checkmarks (✓)**: Objects with no similarities found above threshold
+- **Red warnings (⚠️)**: Objects with similarities that need review
 
 ## License
 
